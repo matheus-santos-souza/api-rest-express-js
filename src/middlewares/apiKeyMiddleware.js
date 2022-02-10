@@ -10,7 +10,7 @@ function apiKeyMiddleware(req, res, next) {
     }));
   }
 
-  if (key !== process.env.API_KEY) {
+  if (key !== process.env.API_KEY_SECRET) {
     return next(res.status(401).json({
       status: 401,
       message: 'invalid.api-key',
