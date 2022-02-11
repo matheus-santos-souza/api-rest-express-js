@@ -13,7 +13,7 @@ function authenticate(req, res, next) {
   try {
     const sub = verify(token, process.env.JWT_SECRET);
 
-    req.user_id = sub;
+    req.userId = sub;
 
     return next();
   } catch (error) {

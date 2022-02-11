@@ -21,7 +21,6 @@ class UserController {
       return res.json({
         error,
         message: error.message,
-
       });
     }
   }

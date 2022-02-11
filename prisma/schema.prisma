@@ -17,5 +17,30 @@ model User {
   password  String    @db.VarChar(256)
   createdAt DateTime? @default(now())
 
+  profile Profile?
   @@map("users")
+}
+
+model Profile {
+  userId    String    @id
+  telephone String?   @db.VarChar(16)
+  createdAt DateTime? @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  Photo Photo?
+  @@map("profiles")
+}
+
+model Photo {
+  profileId String    @id
+  filename  String    @unique
+  key       String
+  size      Int
+  url       String
+  createdAt DateTime? @default(now())
+
+  profile Profile @relation(fields: [profileId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("photos")
 }
