@@ -24,6 +24,20 @@ class UserController {
       });
     }
   }
+
+  async destroy(req, res) {
+    try {
+      const userModel = new UserModel();
+
+      await userModel.delete(req.userId.sub);
+
+      return res.json({ message: 'success.destroy.user' });
+    } catch (error) {
+      return res.status(400).json({
+        error: 'failed.destroy.user',
+      });
+    }
+  }
 }
 
 export { UserController };

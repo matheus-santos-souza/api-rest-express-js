@@ -1,4 +1,5 @@
 import { prismaClient } from '../prisma';
+import { PhotoModel } from './PhotoModel';
 
 class ProfileModel {
   async createOrUpdate(id, body) {
@@ -17,7 +18,7 @@ class ProfileModel {
   }
 
   async findProfile(id) {
-    const profile = await prismaClient.profile.findMany({
+    const profile = await prismaClient.profile.findFirst({
       where: {
         userId: id,
       },
@@ -27,18 +28,30 @@ class ProfileModel {
       },
     });
 
-    const copyProfile = { ...profile[0] };
-    delete copyProfile.user.password;
+    if (profile) {
+      const copyProfile = { ...profile };
+      delete copyProfile.user.password;
+      return copyProfile;
+    }
 
-    return copyProfile;
+    return profile;
   }
 
   async delete(id) {
+    const photoModel = new PhotoModel();
+
     const profile = await prismaClient.profile.delete({
       where: {
         userId: id,
       },
+      include: {
+        Photo: true,
+      },
     });
+
+    if (profile.Photo) {
+      photoModel.fsRemove(profile.Photo.key);
+    }
 
     return profile;
   }

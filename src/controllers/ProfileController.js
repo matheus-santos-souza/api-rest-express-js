@@ -1,6 +1,25 @@
 import { ProfileModel } from '../models/ProfileModel';
 
 class ProfileController {
+  async index(req, res) {
+    try {
+      const profileModel = new ProfileModel();
+      const profile = await profileModel.findProfile(req.userId.sub);
+
+      if (!profile) {
+        return res.status(400).json({
+          error: 'profile.noExists',
+        });
+      }
+
+      return res.json(profile);
+    } catch (error) {
+      return res.status(400).json({
+        error: 'failed.search.profile',
+      });
+    }
+  }
+
   async storeOrUpdate(req, res) {
     try {
       const profileModel = new ProfileModel();
@@ -10,19 +29,6 @@ class ProfileController {
     } catch (error) {
       return res.status(400).json({
         error: 'failed.create.profile',
-      });
-    }
-  }
-
-  async index(req, res) {
-    try {
-      const profileModel = new ProfileModel();
-      const profile = await profileModel.findProfile(req.userId.sub);
-
-      return res.json(profile);
-    } catch (error) {
-      return res.status(400).json({
-        error: 'failed.search.profile',
       });
     }
   }

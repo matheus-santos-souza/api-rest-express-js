@@ -2,29 +2,31 @@
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable no-shadow */
 import fs from 'fs';
-import { resolve } from 'path';
+import { resolve, basename } from 'path';
 import { prismaClient } from '../prisma';
+import 'dotenv/config';
 
 class PhotoModel {
   async createOrUpdate(id, { originalname, size, filename }) {
     const promise = new Promise(async (resolve, reject) => {
-      const findPhoto = await prismaClient.photo.findFirst({
+      const findProfile = await prismaClient.profile.findFirst({
         where: {
-          profileId: id,
+          userId: id,
+        },
+        include: {
+          Photo: true,
         },
       });
 
-      if (findPhoto) {
-        resolve(findPhoto.key);
-      } else {
+      if (findProfile && findProfile.Photo) {
+        resolve(findProfile.Photo.key);
+      } if (findProfile && !findProfile.Photo) {
         reject();
       }
     });
 
-    const resultPromise = promise.then((key) => {
-      const filePath = resolve(__dirname, '..', '..', 'uploads', 'img', 'profile', key);
-      fs.unlinkSync(filePath);
-    }).then(async () => {
+    const resultPromise = promise.then(async (key) => {
+      this.fsRemove(key);
       const photoResult = await this.createOrUpdatePhoto(id, originalname, size, filename);
       return photoResult;
     }, async () => {
@@ -33,6 +35,27 @@ class PhotoModel {
     });
 
     return resultPromise;
+  }
+
+  async delete(id) {
+    const photo = await prismaClient.photo.delete({
+      where: {
+        profileId: id,
+      },
+    });
+
+    this.fsRemove(photo.key);
+    return (photo);
+  }
+
+  async findPhoto(id) {
+    const photo = await prismaClient.photo.findFirst({
+      where: {
+        profileId: id,
+      },
+    });
+
+    return photo;
   }
 
   async createOrUpdatePhoto(id, originalname, size, filename) {
@@ -44,31 +67,23 @@ class PhotoModel {
         filename: originalname,
         key: filename,
         size,
-        url: '',
+        url: `${process.env.URL_API}/${basename(resolve('..', 'uploads', 'img'))}/${basename(resolve('..', 'uploads', 'img', 'profile'))}/${filename}`,
       },
       create: {
         profileId: id,
         filename: originalname,
         key: filename,
         size,
-        url: '',
+        url: `${process.env.URL_API}/${basename(resolve('..', 'uploads', 'img'))}/${basename(resolve('..', 'uploads', 'img', 'profile'))}/${filename}`,
       },
     });
 
     return photo;
   }
 
-  async verifyIsProfile(id) {
-    const profile = await prismaClient.profile.findUnique({
-      where: {
-        userId: id,
-      },
-    });
-
-    if (!profile) {
-      return false;
-    }
-
+  fsRemove(key) {
+    const filePath = resolve(__dirname, '..', '..', 'uploads', 'img', 'profile', key);
+    fs.unlinkSync(filePath);
     return true;
   }
 }

@@ -5,7 +5,10 @@ import crypto from 'crypto';
 export default {
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, resolve(__dirname, '..', '..', 'uploads', 'img', 'profile'));
+      cb(
+        null,
+        resolve(__dirname, '..', '..', 'uploads', 'img', 'profile'),
+      );
     },
     filename: (req, file, cb) => {
       crypto.randomBytes(16, (err, hash) => {
