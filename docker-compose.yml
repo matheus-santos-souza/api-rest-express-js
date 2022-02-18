@@ -18,7 +18,5 @@ services:
     volumes:
       - ./:/home/node/app
     ports:
-      - "3001:3001"
+      - "3005:3001"
     command: "npm run dev"
-    depends_on:
-      - postgresql
