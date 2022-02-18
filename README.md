@@ -8,12 +8,12 @@
   <br>
 - Docker compose com Postgres e Nodejs.<br>
   <br>
-- A API contém um middleware de autenticação (API_KEY_SECRET) onde toda requisição precisa carregar na query um parametro<br> 'api-key' secreto.<br>
+- A API contém um middleware de autenticação (API_KEY_SECRET) onde toda requisição precisa carregar na query um parametro 'api-key' secreto.<br>
   Exemplo: 'http://localhost:3001/api/?api-key=dd75b83436a29251ad79480add5a676a'<br>
   <br>
 - API contém signup com criptográfia da senha (bcrypt).<br>
   <br>
-- API contém signin com Json Web Token (JWT).
+- API contém signin com Json Web Token (JWT).<br>
   <br>
 - API contém um middleware que autentica rotas privadas (request que não foi passada o token jwt). Rotas privadas carregam no link '...api/jwt/...'<br>
   Exemplo: http://localhost:3001/api/jwt/...<br>
