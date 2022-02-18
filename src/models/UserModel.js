@@ -5,7 +5,12 @@ import { PhotoModel } from './PhotoModel';
 class UserModel {
   async create(user) {
     const userCopy = { ...user };
-    const { password } = userCopy;
+    const { password, email } = userCopy;
+
+    const isEmail = await this.isEmail(email);
+    if (isEmail) {
+      throw new Error('email.already.exists');
+    }
 
     const salt = bcrypit.genSaltSync();
     // eslint-disable-next-line no-param-reassign
@@ -39,6 +44,20 @@ class UserModel {
     });
 
     return user;
+  }
+
+  async isEmail(email) {
+    const user = await prismaClient.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (user) {
+      return true;
+    }
+
+    return false;
   }
 }
 

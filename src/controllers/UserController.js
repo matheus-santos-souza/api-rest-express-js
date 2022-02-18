@@ -14,13 +14,12 @@ class UserController {
         });
       }
 
-      const user = await userModel.create(req.body);
+      const user = await userModel.create(req.body, res);
 
       return res.json(user);
     } catch (error) {
-      return res.json({
-        error,
-        message: error.message,
+      return res.status(400).json({
+        error: 'email.already.exists',
       });
     }
   }
