@@ -17,6 +17,8 @@
   <br>
 - API contém um middleware que autentica rotas privadas (request que não foi passada o token jwt). Rotas privadas carregam no link '...api/jwt/...'<br>
   Exemplo: http://localhost:3001/api/jwt/...<br>
+  <br>
+- API contémUpload de foto de perfil (CRUD) (./uploads/img/profile) cada user só pode upar apenas uma foto de perfil.<br>
 
 ## Funcionamento
 
@@ -38,6 +40,8 @@ http://localhost:3005/api/?api-key=dd75b83436a29251ad79480add5a676a<br>
 -dotenv<br>
 -express<br>
 -jsonwebtoken<br>
+-cors<br>
+-multer<br>
 
 # Dependencias de Desenvolvedor usadas:
 
